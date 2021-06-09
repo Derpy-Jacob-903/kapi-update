@@ -191,8 +191,6 @@ class PlayState extends MusicBeatState
 	// Will fire once to prevent debug spam messages and broken animations
 	private var triggeredAlready:Bool = false;
 	
-	// Will decide if she's even allowed to headbang at all depending on the song
-	private var allowedToHeadbang:Bool = false;
 	// Per song additive offset
 	public static var songOffset:Float = 0;
 	// BotPlay text
@@ -358,7 +356,7 @@ class PlayState extends MusicBeatState
 				stageFront.active = false;
 				add(stageFront);
 
-				if (curSong.toLowerCase() == 'hairball' || curSong.toLowerCase() == 'nyaw')
+				if (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw')
 				{
 					upperBoppers = new FlxSprite(-600, -200);
 					upperBoppers.frames = Paths.getSparrowAtlas('upperBop', 'arcade');
@@ -584,7 +582,7 @@ class PlayState extends MusicBeatState
 
 		if (isStoryMode)
 		{
-			switch (curSong.toLowerCase())
+			switch (SONG.song.toLowerCase())
 			{
 				case 'wocky' | 'beathoven' | 'nyaw':
 					kapiIntro(doof);
@@ -625,7 +623,7 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			switch (curSong.toLowerCase())
+			switch (SONG.song.toLowerCase())
 			{
 				default:
 					startCountdown();
@@ -1454,102 +1452,6 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null)
 		{
-			// Make sure Girlfriend cheers only for certain songs
-			if(allowedToHeadbang)
-			{
-				// Don't animate GF if something else is already animating her (eg. train passing)
-				if(gf.animation.curAnim.name == 'danceLeft' || gf.animation.curAnim.name == 'danceRight' || gf.animation.curAnim.name == 'idle')
-				{
-					// Per song treatment since some songs will only have the 'Hey' at certain times
-					switch(curSong)
-					{
-						case 'Philly':
-						{
-							// General duration of the song
-							if(curBeat < 250)
-							{
-								// Beats to skip or to stop GF from cheering
-								if(curBeat != 184 && curBeat != 216)
-								{
-									if(curBeat % 16 == 8)
-									{
-										// Just a garantee that it'll trigger just once
-										if(!triggeredAlready)
-										{
-											gf.playAnim('cheer');
-											triggeredAlready = true;
-										}
-									}else triggeredAlready = false;
-								}
-							}
-						}
-						case 'Bopeebo':
-						{
-							// Where it starts || where it ends
-							if(curBeat > 5 && curBeat < 130)
-							{
-								if(curBeat % 8 == 7)
-								{
-									if(!triggeredAlready)
-									{
-										gf.playAnim('cheer');
-										triggeredAlready = true;
-									}
-								}else triggeredAlready = false;
-							}
-						}
-						case 'Blammed':
-						{
-							if(curBeat > 30 && curBeat < 190)
-							{
-								if(curBeat < 90 || curBeat > 128)
-								{
-									if(curBeat % 4 == 2)
-									{
-										if(!triggeredAlready)
-										{
-											gf.playAnim('cheer');
-											triggeredAlready = true;
-										}
-									}else triggeredAlready = false;
-								}
-							}
-						}
-						case 'Cocoa':
-						{
-							if(curBeat < 170)
-							{
-								if(curBeat < 65 || curBeat > 130 && curBeat < 145)
-								{
-									if(curBeat % 16 == 15)
-									{
-										if(!triggeredAlready)
-										{
-											gf.playAnim('cheer');
-											triggeredAlready = true;
-										}
-									}else triggeredAlready = false;
-								}
-							}
-						}
-						case 'Eggnog':
-						{
-							if(curBeat > 10 && curBeat != 111 && curBeat < 220)
-							{
-								if(curBeat % 8 == 7)
-								{
-									if(!triggeredAlready)
-									{
-										gf.playAnim('cheer');
-										triggeredAlready = true;
-									}
-								}else triggeredAlready = false;
-							}
-						}
-					}
-				}
-			}
-			
 			#if windows
 			if (luaModchart != null)
 				luaModchart.setVar("mustHit",PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
@@ -1631,36 +1533,6 @@ class PlayState extends MusicBeatState
 
 		FlxG.watch.addQuick("beatShit", curBeat);
 		FlxG.watch.addQuick("stepShit", curStep);
-
-		if (curSong == 'Fresh')
-		{
-			switch (curBeat)
-			{
-				case 16:
-					camZooming = true;
-					gfSpeed = 2;
-				case 48:
-					gfSpeed = 1;
-				case 80:
-					gfSpeed = 2;
-				case 112:
-					gfSpeed = 1;
-				case 163:
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new TitleState());
-			}
-		}
-
-		if (curSong == 'Bopeebo')
-		{
-			switch (curBeat)
-			{
-				case 128, 129, 130:
-					vocals.volume = 0;
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new PlayState());
-			}
-		}
 
 		if (health <= 0)
 		{
@@ -2838,28 +2710,28 @@ class PlayState extends MusicBeatState
 
 		/* KAPI STAGE CODE STARTS */
 		
-		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && curSong.toLowerCase() != 'nyaw')
+		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
 		}
-		if (curSong.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+		if (SONG.song.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
 		{
 			FlxG.camera.zoom += 0.016;
 			camHUD.zoom += 0.015;
 		}
-		if (curSong.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+		if (SONG.song.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
 		{
 			FlxG.camera.zoom += 0.014;
 			camHUD.zoom += 0.015;
 		}
-		if (curSong.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+		if (SONG.song.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
 		{
 			FlxG.camera.zoom += 0.017;
 			camHUD.zoom += 0.02;
 		}
 
-		if (curSong.toLowerCase() == 'wocky' && curBeat % 2 == 0)
+		if (SONG.song.toLowerCase() == 'wocky' && curBeat % 2 == 0)
 		{
 			phillyCityLights.forEach(function(light:FlxSprite)
 			{
@@ -2870,7 +2742,7 @@ class PlayState extends MusicBeatState
 
 			phillyCityLights.members[curLight].visible = true;
 		}
-		if ((curSong.toLowerCase() == 'beathoven' || curSong.toLowerCase() == 'hairball') && curBeat % 1 == 0)
+		if ((SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball') && curBeat % 1 == 0)
 		{
 			phillyCityLights.forEach(function(light:FlxSprite)
 			{
@@ -2881,7 +2753,7 @@ class PlayState extends MusicBeatState
 
 			phillyCityLights.members[curLight].visible = true;
 		}
-		if (curSong.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+		if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
 		{
 			phillyCityLights.forEach(function(light:FlxSprite)
 			{
@@ -2895,14 +2767,14 @@ class PlayState extends MusicBeatState
 			camHUD.zoom += 0.022;
 		}
 
-		if (curBeat % 2 == 0 && curSong.toLowerCase() == 'nyaw')
+		if (curBeat % 2 == 0 && SONG.song.toLowerCase() == 'nyaw')
 			bottomBoppers.animation.play('bop', true);
-		if (curBeat % 2 == 0 && (curSong.toLowerCase() == 'beathoven' || curSong.toLowerCase() == 'hairball'))
+		if (curBeat % 2 == 0 && (SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball'))
 			littleGuys.animation.play('bop', true);
-		if (curBeat % 2 == 1 && (curSong.toLowerCase() == 'hairball' || curSong.toLowerCase() == 'nyaw'))
+		if (curBeat % 2 == 1 && (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw'))
 			upperBoppers.animation.play('bop', true);
 
-		if (curStage == "arcade" && curSong.toLowerCase() == 'nyaw')
+		if (curStage == "arcade" && SONG.song.toLowerCase() == 'nyaw')
 		{
 			switch (curBeat)
 			{
