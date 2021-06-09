@@ -1,0 +1,5 @@
+Wocky:kapi:0
+Beathoven:kapi:0
+Hairball:kapi-mad:0
+Nyaw:kapi:0
+Flatzone:game-and-watch:1
