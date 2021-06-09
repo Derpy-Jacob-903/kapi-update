@@ -118,8 +118,8 @@ class MainMenuState extends MusicBeatState
 		versionShit2.scrollFactor.set();
 		var versionShit:FlxText = new FlxText(5, FlxG.height - 22, 0, "Special thanks to BBPanzu (For BF Voice) and MikeGeno (Hairball)!", 12);
 		versionShit.scrollFactor.set();
-		versionShit.setFormat("FOT-PopHappiness Std EB", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		versionShit2.setFormat("FOT-PopHappiness Std EB", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat("Delfino", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit2.setFormat("Delfino", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 		add(versionShit2);
 

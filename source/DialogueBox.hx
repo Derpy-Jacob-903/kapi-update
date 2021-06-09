@@ -88,14 +88,14 @@ class DialogueBox extends FlxSpriteGroup
 		box.updateHitbox();
 		add(box);
 
-		dropText = new FlxText(185, 500, Std.int(FlxG.width), "", 42);
-		dropText.font = 'FOT-PopHappiness Std EB';
+		dropText = new FlxText(185, 500, Std.int(FlxG.width), "", 48);
+		dropText.font = 'Delfino';
 		dropText.color = FlxColor.BLACK;
 		dropText.antialiasing = true;
 		add(dropText);
 
-		swagDialogue = new FlxTypeText(182, 497, Std.int(FlxG.width), "", 42);
-		swagDialogue.font = 'FOT-PopHappiness Std EB';
+		swagDialogue = new FlxTypeText(182, 497, Std.int(FlxG.width), "", 48);
+		swagDialogue.font = 'Delfino';
 		swagDialogue.color = FlxColor.WHITE;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
 		swagDialogue.antialiasing = true;
