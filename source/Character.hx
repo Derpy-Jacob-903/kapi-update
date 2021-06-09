@@ -228,6 +228,9 @@ class Character extends FlxSprite
 						else
 							playAnim('danceLeft');
 					}
+				case 'kapi':
+					if (animation.curAnim.name != 'stare')
+						playAnim('idle');
 				default:
 					playAnim('idle');
 			}
