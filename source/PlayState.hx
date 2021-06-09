@@ -155,25 +155,16 @@ class PlayState extends MusicBeatState
 	public var dialogue:Array<String> = ['dad:blah blah blah', 'bf:coolswag'];
 
 	var halloweenBG:FlxSprite;
-	var isHalloween:Bool = false;
 
-	var phillyCityLights:FlxTypedGroup<FlxSprite>;
-	var phillyTrain:FlxSprite;
-	var trainSound:FlxSound;
-
-	var limo:FlxSprite;
-	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
-	var fastCar:FlxSprite;
-	var songName:FlxText;
 	var upperBoppers:FlxSprite;
 	var bottomBoppers:FlxSprite;
-	var santa:FlxSprite;
-
 	var littleGuys:FlxSprite;
+	var phillyCityLights:FlxTypedGroup<FlxSprite>;
+
+	var songName:FlxText;
 
 	var fc:Bool = true;
 
-	var bgGirls:BackgroundGirls;
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 
 	var talking:Bool = true;
@@ -345,7 +336,6 @@ class PlayState extends MusicBeatState
 				littleGuys.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
 				littleGuys.antialiasing = true;
 				littleGuys.scrollFactor.set(0.9, 0.9);
-				littleGuys.setGraphicSize(Std.int(littleGuys.width * 1));
 				littleGuys.updateHitbox();
 
 				if (SONG.song.toLowerCase() == "beathoven" || SONG.song.toLowerCase() == "hairball")
@@ -358,7 +348,6 @@ class PlayState extends MusicBeatState
 					bottomBoppers.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
 					bottomBoppers.antialiasing = true;
 					bottomBoppers.scrollFactor.set(0.92, 0.92);
-					bottomBoppers.setGraphicSize(Std.int(bottomBoppers.width * 1));
 					bottomBoppers.updateHitbox();
 					add(bottomBoppers);
 				}
@@ -376,10 +365,9 @@ class PlayState extends MusicBeatState
 				upperBoppers.animation.addByPrefix('bop', "Upper Crowd Bob", 24, false);
 				upperBoppers.antialiasing = true;
 				upperBoppers.scrollFactor.set(1.05, 1.05);
-				upperBoppers.setGraphicSize(Std.int(upperBoppers.width * 1));
 				upperBoppers.updateHitbox();
 
-				if (SONG.song.toLowerCase() == "nyaw")
+				if (curSong.toLowerCase() == 'hairball' || curSong.toLowerCase() == 'nyaw')
 					add(upperBoppers);
 
 			case 'flatzone': 
