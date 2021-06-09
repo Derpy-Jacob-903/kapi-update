@@ -2776,7 +2776,7 @@ class PlayState extends MusicBeatState
 						ease: FlxEase.quadInOut,
 					});
 				case 283:
-					boyfriend.playAnim('nya', true);
+					boyfriend.playAnim('meow', true);
 				case 434:
 					dad.playAnim('stare', true);
 
