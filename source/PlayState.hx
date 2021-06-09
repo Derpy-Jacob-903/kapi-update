@@ -307,7 +307,7 @@ class PlayState extends MusicBeatState
 
 		switch (SONG.stage)
 		{
-			case 'arcade':
+			case 'arcade' | 'arcade-sunset' | 'arcade-closed':
 				curStage = 'arcade';
 				defaultCamZoom = 0.9;
 
@@ -328,15 +328,15 @@ class PlayState extends MusicBeatState
 				bg.active = false;
 				add(bg);
 
-				for (i in 0...5)
-				{
-					var light:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('light', 'arcade' + i));
-					light.scrollFactor.set(0.9, 0.9);
-					light.visible = false;
-					light.updateHitbox();
-					light.antialiasing = true;
-					phillyCityLights.add(light);
-				}
+				// for (i in 0...5)
+				// {
+				// 	var light:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('light', 'arcade' + i));
+				// 	light.scrollFactor.set(0.9, 0.9);
+				// 	light.visible = false;
+				// 	light.updateHitbox();
+				// 	light.antialiasing = true;
+				// 	phillyCityLights.add(light);
+				// }
 
 				littleGuys = new FlxSprite(25, 200);
 				littleGuys.frames = Paths.getSparrowAtlas('littleguys', 'arcade');
@@ -3003,69 +3003,21 @@ class PlayState extends MusicBeatState
 		}
 
 		if (curBeat % 16 == 15 && SONG.song == 'Tutorial' && dad.curCharacter == 'gf' && curBeat > 16 && curBeat < 48)
-			{
-				boyfriend.playAnim('hey', true);
-				dad.playAnim('cheer', true);
-			}
-
-		switch (curStage)
 		{
-			case 'school':
-				if(FlxG.save.data.distractions){
-					bgGirls.dance();
-				}
-
-			case 'mall':
-				if(FlxG.save.data.distractions){
-					upperBoppers.animation.play('bop', true);
-					bottomBoppers.animation.play('bop', true);
-					santa.animation.play('idle', true);
-				}
-
-			case 'limo':
-				if(FlxG.save.data.distractions){
-					grpLimoDancers.forEach(function(dancer:BackgroundDancer)
-						{
-							dancer.dance();
-						});
-		
-						if (FlxG.random.bool(10) && fastCarCanDrive)
-							fastCarDrive();
-				}
-			case "philly":
-				if(FlxG.save.data.distractions){
-					if (!trainMoving)
-						trainCooldown += 1;
-	
-					if (curBeat % 4 == 0)
-					{
-						phillyCityLights.forEach(function(light:FlxSprite)
-						{
-							light.visible = false;
-						});
-	
-						curLight = FlxG.random.int(0, phillyCityLights.length - 1);
-	
-						phillyCityLights.members[curLight].visible = true;
-						// phillyCityLights.members[curLight].alpha = 1;
-				}
-
-				}
-
-				if (curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8)
-				{
-					if(FlxG.save.data.distractions){
-						trainCooldown = FlxG.random.int(-4, 0);
-						trainStart();
-					}
-				}
+			boyfriend.playAnim('hey', true);
+			dad.playAnim('cheer', true);
 		}
 
-		if (isHalloween && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
+		if (curBeat % 4 == 0)
 		{
-			if(FlxG.save.data.distractions){
-				lightningStrikeShit();
-			}
+			phillyCityLights.forEach(function(light:FlxSprite)
+			{
+				light.visible = false;
+			});
+
+			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+			phillyCityLights.members[curLight].visible = true;
 		}
 	}
 
