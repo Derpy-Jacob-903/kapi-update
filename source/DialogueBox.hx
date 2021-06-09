@@ -91,12 +91,14 @@ class DialogueBox extends FlxSpriteGroup
 		dropText = new FlxText(185, 500, Std.int(FlxG.width), "", 42);
 		dropText.font = 'FOT-PopHappiness Std EB';
 		dropText.color = FlxColor.BLACK;
+		dropText.antialiasing = true;
 		add(dropText);
 
 		swagDialogue = new FlxTypeText(182, 497, Std.int(FlxG.width), "", 42);
 		swagDialogue.font = 'FOT-PopHappiness Std EB';
 		swagDialogue.color = FlxColor.WHITE;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
+		swagDialogue.antialiasing = true;
 		add(swagDialogue);
 
 		dialogue = new Alphabet(0, 80, "", false, true);
