@@ -184,7 +184,7 @@ class PlayState extends MusicBeatState
 
 	public static var campaignScore:Int = 0;
 
-	var defaultCamZoom:Float = 1.05;
+	var defaultCamZoom:Float = 0.9;
 
 	public static var daPixelZoom:Float = 6;
 
@@ -309,7 +309,6 @@ class PlayState extends MusicBeatState
 		{
 			case 'arcade' | 'arcade-sunset' | 'arcade-closed':
 				curStage = 'arcade';
-				defaultCamZoom = 0.9;
 
 				var bg:FlxSprite;
 
@@ -396,7 +395,6 @@ class PlayState extends MusicBeatState
 
 			default:
 				curStage = 'stage';
-				defaultCamZoom = 0.9;
 
 				var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback', 'shared'));
 				bg.antialiasing = true;
@@ -601,8 +599,39 @@ class PlayState extends MusicBeatState
 		{
 			switch (curSong.toLowerCase())
 			{
-				case 'wocky' | 'beathoven' | 'hairball' | 'nyaw':
+				case 'wocky' | 'beathoven' | 'nyaw':
 					kapiIntro(doof);
+				case "hairball":
+					var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
+					add(blackScreen);
+					blackScreen.scrollFactor.set();
+					camHUD.visible = false;
+
+					new FlxTimer().start(0.1, function(tmr:FlxTimer)
+					{
+						remove(blackScreen);
+						FlxG.sound.play(Paths.sound('brokenpad', 'arcade'));
+						camFollow.y = 590;
+						camFollow.x -= 200;
+						FlxG.camera.focusOn(camFollow.getPosition());
+						FlxG.camera.zoom = 1.1;
+						new FlxTimer().start(0.2, function(tmr:FlxTimer)
+						{
+							dad.playAnim('stomp', true);
+						});
+						new FlxTimer().start(0.6, function(tmr:FlxTimer)
+						{
+							camHUD.visible = true;
+							remove(blackScreen);
+							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
+								ease: FlxEase.quadInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									kapiIntro(doof);
+								}
+							});
+						});
+					});
 				default:
 					startCountdown();
 			}
@@ -639,19 +668,15 @@ class PlayState extends MusicBeatState
 		senpaiEvil.updateHitbox();
 		senpaiEvil.screenCenter();
 
-		if (SONG.song.toLowerCase() == 'roses' || SONG.song.toLowerCase() == 'thorns')
+		if (SONG.song.toLowerCase() == 'hairball')
 		{
 			remove(black);
-
-			if (SONG.song.toLowerCase() == 'thorns')
-			{
-				add(red);
-			}
+			add(dialogueBox);
 		}
 
-		new FlxTimer().start(0.3, function(tmr:FlxTimer)
-		{
-			black.alpha -= 0.15;
+		new FlxTimer().start(0.2, function(tmr:FlxTimer)
+		{	
+			black.alpha -= 0.1;
 
 			if (black.alpha > 0)
 			{
@@ -662,41 +687,7 @@ class PlayState extends MusicBeatState
 				if (dialogueBox != null)
 				{
 					inCutscene = true;
-
-					if (SONG.song.toLowerCase() == 'thorns')
-					{
-						add(senpaiEvil);
-						senpaiEvil.alpha = 0;
-						new FlxTimer().start(0.3, function(swagTimer:FlxTimer)
-						{
-							senpaiEvil.alpha += 0.15;
-							if (senpaiEvil.alpha < 1)
-							{
-								swagTimer.reset();
-							}
-							else
-							{
-								senpaiEvil.animation.play('idle');
-								FlxG.sound.play(Paths.sound('Senpai_Dies'), 1, false, null, true, function()
-								{
-									remove(senpaiEvil);
-									remove(red);
-									FlxG.camera.fade(FlxColor.WHITE, 0.01, true, function()
-									{
-										add(dialogueBox);
-									}, true);
-								});
-								new FlxTimer().start(3.2, function(deadTime:FlxTimer)
-								{
-									FlxG.camera.fade(FlxColor.WHITE, 1.6, false);
-								});
-							}
-						});
-					}
-					else
-					{
-						add(dialogueBox);
-					}
+					add(dialogueBox);
 				}
 				else
 					startCountdown();
@@ -740,9 +731,16 @@ class PlayState extends MusicBeatState
 
 		startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
 		{
-			dad.dance();
-			gf.dance();
-			boyfriend.playAnim('idle');
+			// this just based on beatHit stuff but compact
+			if (swagCounter % gfSpeed == 0 && swagCounter < 4)
+				gf.dance();
+			if (swagCounter % 2 == 0)
+			{
+				if (!boyfriend.animation.curAnim.name.startsWith("sing"))
+					boyfriend.dance();
+				if (!dad.animation.curAnim.name.startsWith("sing"))
+					dad.dance();
+			}
 
 			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 			introAssets.set('default', ['ready', "set", "go"]);
@@ -833,7 +831,7 @@ class PlayState extends MusicBeatState
 
 			swagCounter += 1;
 			// generateSong('fresh');
-		}, 5);
+		}, 4);
 	}
 
 	var previousFrameTime:Int = 0;
@@ -856,6 +854,13 @@ class PlayState extends MusicBeatState
 
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
+
+		// have them all dance when the song starts
+		gf.dance();
+		if (!boyfriend.animation.curAnim.name.startsWith("sing"))
+			boyfriend.dance();
+		if (!dad.animation.curAnim.name.startsWith("sing"))
+			dad.dance();
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
@@ -890,13 +895,6 @@ class PlayState extends MusicBeatState
 			songPosBG.cameras = [camHUD];
 			songPosBar.cameras = [camHUD];
 			songName.cameras = [camHUD];
-		}
-		
-		// Song check real quick
-		switch(curSong)
-		{
-			case 'Bopeebo' | 'Philly' | 'Blammed' | 'Cocoa' | 'Eggnog': allowedToHeadbang = true;
-			default: allowedToHeadbang = false;
 		}
 		
 		#if windows
@@ -2830,12 +2828,14 @@ class PlayState extends MusicBeatState
 				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
 				FlxG.log.add('CHANGED BPM!');
 			}
-			// else
-			// Conductor.changeBPM(SONG.bpm);
 
-			// Dad doesnt interupt his own notes
-			if (SONG.notes[Math.floor(curStep / 16)].mustHitSection && dad.curCharacter != 'gf')
-				dad.dance();
+			if (curBeat % 2 == 0)
+			{
+				if (!dad.animation.curAnim.name.startsWith('sing'))
+					dad.dance();
+				if (!boyfriend.animation.curAnim.name.startsWith('sing'))
+					boyfriend.dance();
+			}
 		}
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 		wiggleShit.update(Conductor.crochet);
@@ -2857,25 +2857,99 @@ class PlayState extends MusicBeatState
 			gf.dance();
 		}
 
-		if (!boyfriend.animation.curAnim.name.startsWith("sing"))
+		/* KAPI STAGE CODE STARTS */
+		
+		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && curSong.toLowerCase() != 'nyaw')
 		{
-			boyfriend.playAnim('idle');
+			FlxG.camera.zoom += 0.015;
+			camHUD.zoom += 0.03;
+		}
+		if (curSong.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+		{
+			FlxG.camera.zoom += 0.016;
+			camHUD.zoom += 0.015;
+		}
+		if (curSong.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+		{
+			FlxG.camera.zoom += 0.014;
+			camHUD.zoom += 0.015;
+		}
+		if (curSong.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+		{
+			FlxG.camera.zoom += 0.017;
+			camHUD.zoom += 0.02;
 		}
 
-		if (curStage == "arcade")
+		if (curSong.toLowerCase() == 'wocky' && curBeat % 2 == 0)
 		{
-			if (curBeat % 4 == 0)
+			phillyCityLights.forEach(function(light:FlxSprite)
 			{
-				phillyCityLights.forEach(function(light:FlxSprite)
-				{
-					light.visible = false;
-				});
-	
-				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
-	
-				phillyCityLights.members[curLight].visible = true;
+				light.visible = false;
+			});
+
+			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+			phillyCityLights.members[curLight].visible = true;
+		}
+		if ((curSong.toLowerCase() == 'beathoven' || curSong.toLowerCase() == 'hairball') && curBeat % 1 == 0)
+		{
+			phillyCityLights.forEach(function(light:FlxSprite)
+			{
+				light.visible = false;
+			});
+
+			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+			phillyCityLights.members[curLight].visible = true;
+		}
+		if (curSong.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+		{
+			phillyCityLights.forEach(function(light:FlxSprite)
+			{
+				light.visible = false;
+			});
+
+			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+			phillyCityLights.members[curLight].visible = true;
+
+			FlxG.camera.zoom += 0.02;
+			camHUD.zoom += 0.022;
+		}
+
+		if (curBeat % 2 == 0 && curSong.toLowerCase() == 'nyaw')
+			bottomBoppers.animation.play('bop', true);
+		if (curBeat % 2 == 0 && (curSong.toLowerCase() == 'beathoven' || curSong.toLowerCase() == 'hairball'))
+			littleGuys.animation.play('bop', true);
+		if (curBeat % 2 == 1 && (curSong.toLowerCase() == 'hairball' || curSong.toLowerCase() == 'nyaw'))
+			upperBoppers.animation.play('bop', true);
+
+		if (curStage == "arcade" && curSong.toLowerCase() == 'nyaw')
+		{
+			switch (curBeat)
+			{
+				case 31 | 135 | 203 | 363:
+					dad.playAnim('meow', true);
+				case 282:
+					FlxTween.tween(FlxG.camera, {zoom: 1}, .5, {
+						ease: FlxEase.quadInOut,
+					});
+				case 283:
+					boyfriend.playAnim('nya', true);
+				case 434:
+					dad.playAnim('stare', true);
+
+					new FlxTimer().start(1.1, function(tmr:FlxTimer)
+					{
+						var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+						black.scrollFactor.set();
+						add(black);
+						camHUD.visible = false;
+					});
 			}
 		}
+
+		/* KAPI STAGE CODE ENDS */
+
 	}
 
 	var curLight:Int = 0;
