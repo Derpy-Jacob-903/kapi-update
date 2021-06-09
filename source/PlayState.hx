@@ -302,7 +302,6 @@ class PlayState extends MusicBeatState
 				curStage = 'arcade';
 
 				var bg:FlxSprite;
-
 				switch (SONG.stage)
 				{
 					default:
@@ -312,15 +311,12 @@ class PlayState extends MusicBeatState
 					case 'arcade-closed':
 						bg = new FlxSprite(-600, -200).loadGraphic(Paths.image('closed', 'arcade'));
 				}
-
 				bg.antialiasing = true;
 				bg.scrollFactor.set(0.9, 0.9);
 				bg.active = false;
 				add(bg);
 
 				phillyCityLights = new FlxTypedGroup<FlxSprite>();
-				add(phillyCityLights);
-
 				for (i in 0...5)
 				{
 					var light:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('light' + i, 'arcade'));
@@ -330,16 +326,18 @@ class PlayState extends MusicBeatState
 					light.antialiasing = true;
 					phillyCityLights.add(light);
 				}
-
-				littleGuys = new FlxSprite(25, 200);
-				littleGuys.frames = Paths.getSparrowAtlas('littleguys', 'arcade');
-				littleGuys.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
-				littleGuys.antialiasing = true;
-				littleGuys.scrollFactor.set(0.9, 0.9);
-				littleGuys.updateHitbox();
+				add(phillyCityLights);
 
 				if (SONG.song.toLowerCase() == "beathoven" || SONG.song.toLowerCase() == "hairball")
+				{
+					littleGuys = new FlxSprite(25, 200);
+					littleGuys.frames = Paths.getSparrowAtlas('littleguys', 'arcade');
+					littleGuys.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
+					littleGuys.antialiasing = true;
+					littleGuys.scrollFactor.set(0.9, 0.9);
+					littleGuys.updateHitbox();
 					add(littleGuys);
+				}
 
 				if (SONG.song.toLowerCase() == "nyaw")
 				{
@@ -360,15 +358,16 @@ class PlayState extends MusicBeatState
 				stageFront.active = false;
 				add(stageFront);
 
-				upperBoppers = new FlxSprite(-600, -200);
-				upperBoppers.frames = Paths.getSparrowAtlas('upperBop', 'arcade');
-				upperBoppers.animation.addByPrefix('bop', "Upper Crowd Bob", 24, false);
-				upperBoppers.antialiasing = true;
-				upperBoppers.scrollFactor.set(1.05, 1.05);
-				upperBoppers.updateHitbox();
-
 				if (curSong.toLowerCase() == 'hairball' || curSong.toLowerCase() == 'nyaw')
+				{
+					upperBoppers = new FlxSprite(-600, -200);
+					upperBoppers.frames = Paths.getSparrowAtlas('upperBop', 'arcade');
+					upperBoppers.animation.addByPrefix('bop', "Upper Crowd Bob", 24, false);
+					upperBoppers.antialiasing = true;
+					upperBoppers.scrollFactor.set(1.05, 1.05);
+					upperBoppers.updateHitbox();
 					add(upperBoppers);
+				}
 
 			case 'flatzone': 
 				curStage = 'flatzone';
