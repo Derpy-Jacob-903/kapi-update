@@ -249,16 +249,16 @@ class ChartingState extends MusicBeatState
 
 		
 		var restart = new FlxButton(10,140,"Reset Chart", function()
-            {
-                for (ii in 0..._song.notes.length)
-                {
-                    for (i in 0..._song.notes[ii].sectionNotes.length)
-                        {
-                            _song.notes[ii].sectionNotes = [];
-                        }
-                }
-                resetSection(true);
-            });
+			{
+				for (ii in 0..._song.notes.length)
+				{
+					for (i in 0..._song.notes[ii].sectionNotes.length)
+						{
+							_song.notes[ii].sectionNotes = [];
+						}
+				}
+				resetSection(true);
+			});
 
 		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'load autosave', loadAutosave);
 		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 65, 0.1, 1, 1.0, 5000.0, 1);
@@ -372,13 +372,13 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperVocalVolLabel);
 		tab_group_song.add(stepperSongVol);
 		tab_group_song.add(stepperSongVolLabel);
-        tab_group_song.add(shiftNoteDialLabel);
-        tab_group_song.add(stepperShiftNoteDial);
-        tab_group_song.add(shiftNoteDialLabel2);
-        tab_group_song.add(stepperShiftNoteDialstep);
-        tab_group_song.add(shiftNoteDialLabel3);
-        tab_group_song.add(stepperShiftNoteDialms);
-        tab_group_song.add(shiftNoteButton);
+		tab_group_song.add(shiftNoteDialLabel);
+		tab_group_song.add(stepperShiftNoteDial);
+		tab_group_song.add(shiftNoteDialLabel2);
+		tab_group_song.add(stepperShiftNoteDialstep);
+		tab_group_song.add(shiftNoteDialLabel3);
+		tab_group_song.add(stepperShiftNoteDialms);
+		tab_group_song.add(shiftNoteButton);
 		tab_group_song.add(hitsounds);
 
 		var tab_group_assets = new FlxUI(null, UI_box);
@@ -1186,7 +1186,7 @@ class ChartingState extends MusicBeatState
 	{
 		remove(gridBG);
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * _song.notes[curSection].lengthInSteps);
-        add(gridBG);
+		add(gridBG);
 
 		remove(gridBlackLine);
 		gridBlackLine = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);

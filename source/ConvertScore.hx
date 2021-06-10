@@ -1,10 +1,10 @@
 class ConvertScore
 {
-    public static function convertScore(noteDiff:Float):Int
-    {
-        var daRating:String = Ratings.CalculateRating(noteDiff, 166);
+	public static function convertScore(noteDiff:Float):Int
+	{
+		var daRating:String = Ratings.CalculateRating(noteDiff, 166);
 
-        switch(daRating)
+		switch(daRating)
 			{
 				case 'shit':
 					return -300;
@@ -14,8 +14,8 @@ class ConvertScore
 					return 200;
 				case 'sick':
 					return 350;
-            }
-        return 0;
-    }
+			}
+		return 0;
+	}
 
 }

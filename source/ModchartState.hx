@@ -208,13 +208,13 @@ class ModchartState
 		switch(id)
 		{
 			case 'boyfriend':
-                @:privateAccess
+				@:privateAccess
 				return PlayState.boyfriend;
 			case 'girlfriend':
-                @:privateAccess
+				@:privateAccess
 				return PlayState.gf;
 			case 'dad':
-                @:privateAccess
+				@:privateAccess
 				return PlayState.dad;
 		}
 		// lua objects or what ever
@@ -272,7 +272,7 @@ class ModchartState
 
 		luaSprites.set(id,sprite);
 
-        PlayState.instance.addObject(sprite);
+		PlayState.instance.addObject(sprite);
 
 		sprite.animation.play(startAnim);
 		return id;
@@ -306,37 +306,37 @@ class ModchartState
 		luaSprites.set(toBeCalled,sprite);
 		// and I quote:
 		// shitty layering but it works!
-        @:privateAccess
-        {
-            if (drawBehind)
-            {
-                PlayState.instance.removeObject(PlayState.gf);
-                PlayState.instance.removeObject(PlayState.boyfriend);
-                PlayState.instance.removeObject(PlayState.dad);
-            }
-            PlayState.instance.addObject(sprite);
-            if (drawBehind)
-            {
-                PlayState.instance.addObject(PlayState.gf);
-                PlayState.instance.addObject(PlayState.boyfriend);
-                PlayState.instance.addObject(PlayState.dad);
-            }
-        }
+		@:privateAccess
+		{
+			if (drawBehind)
+			{
+				PlayState.instance.removeObject(PlayState.gf);
+				PlayState.instance.removeObject(PlayState.boyfriend);
+				PlayState.instance.removeObject(PlayState.dad);
+			}
+			PlayState.instance.addObject(sprite);
+			if (drawBehind)
+			{
+				PlayState.instance.addObject(PlayState.gf);
+				PlayState.instance.addObject(PlayState.boyfriend);
+				PlayState.instance.addObject(PlayState.dad);
+			}
+		}
 		#end
 		return toBeCalled;
 	}
 
-    public function die()
-    {
-        Lua.close(lua);
+	public function die()
+	{
+		Lua.close(lua);
 		lua = null;
-    }
+	}
 
-    // LUA SHIT
+	// LUA SHIT
 
-    function new()
-    {
-        		trace('opening a lua state (because we are cool :))');
+	function new()
+	{
+				trace('opening a lua state (because we are cool :))');
 				lua = LuaL.newstate();
 				LuaL.openlibs(lua);
 				trace("Lua version: " + Lua.version());
@@ -822,16 +822,16 @@ class ModchartState
 					setVar("defaultStrum" + i + "Angle", Math.floor(member.angle));
 					trace("Adding strum" + i);
 				}
-    }
+	}
 
-    public function executeState(name,args:Array<Dynamic>)
-    {
-        return Lua.tostring(lua,callLua(name, args));
-    }
+	public function executeState(name,args:Array<Dynamic>)
+	{
+		return Lua.tostring(lua,callLua(name, args));
+	}
 
-    public static function createModchartState():ModchartState
-    {
-        return new ModchartState();
-    }
+	public static function createModchartState():ModchartState
+	{
+		return new ModchartState();
+	}
 }
 #end
