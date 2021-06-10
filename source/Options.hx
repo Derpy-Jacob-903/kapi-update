@@ -72,8 +72,6 @@ class Option
 	public function right():Bool { return throw "stub!"; }
 }
 
-
-
 class DFJKOption extends Option
 {
 	private var controls:Controls;
@@ -263,8 +261,6 @@ class FlashingLightsOption extends Option
 
 class Judgement extends Option
 {
-	
-
 	public function new(desc:String)
 	{
 		super();
@@ -437,7 +433,6 @@ class ScrollSpeedOption extends Option
 		return true;
 	}
 }
-
 
 class RainbowFPSOption extends Option
 {

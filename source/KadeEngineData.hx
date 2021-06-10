@@ -37,10 +37,18 @@ class KadeEngineData
 			FlxG.save.data.fpsRain = false;
 
 		if (FlxG.save.data.fpsCap == null)
-			FlxG.save.data.fpsCap = 120;
+			#if desktop
+			FlxG.save.data.fpsCap = 120; // baby proof so you can't hard lock ur copy of kade engine
+			#else
+			FlxG.save.data.fpsCap = 60; // baby proof so you can't hard lock ur copy of kade engine
+			#end
 
 		if (FlxG.save.data.fpsCap > 285 || FlxG.save.data.fpsCap < 60)
+			#if desktop
 			FlxG.save.data.fpsCap = 120; // baby proof so you can't hard lock ur copy of kade engine
+			#else
+			FlxG.save.data.fpsCap = 60; // baby proof so you can't hard lock ur copy of kade engine
+			#end
 		
 		if (FlxG.save.data.scrollSpeed == null)
 			FlxG.save.data.scrollSpeed = 1;

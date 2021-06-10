@@ -324,9 +324,10 @@ class PlayState extends MusicBeatState
 					light.antialiasing = true;
 					phillyCityLights.add(light);
 				}
-				add(phillyCityLights);
+				if (FlxG.save.data.distractions)
+					add(phillyCityLights);
 
-				if (SONG.song.toLowerCase() == "beathoven" || SONG.song.toLowerCase() == "hairball")
+				if (FlxG.save.data.distractions && (SONG.song.toLowerCase() == "beathoven" || SONG.song.toLowerCase() == "hairball"))
 				{
 					littleGuys = new FlxSprite(25, 200);
 					littleGuys.frames = Paths.getSparrowAtlas('littleguys', 'arcade');
@@ -356,7 +357,7 @@ class PlayState extends MusicBeatState
 				stageFront.active = false;
 				add(stageFront);
 
-				if (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw')
+				if (FlxG.save.data.distractions && (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw'))
 				{
 					upperBoppers = new FlxSprite(-600, -200);
 					upperBoppers.frames = Paths.getSparrowAtlas('upperBop', 'arcade');
@@ -453,7 +454,6 @@ class PlayState extends MusicBeatState
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
 		cpuStrums = new FlxTypedGroup<FlxSprite>();
-
 
 		if (SONG.song == null)
 			trace('song is null???');
@@ -1706,7 +1706,7 @@ class PlayState extends MusicBeatState
 								dad.playAnim('singLEFT' + altAnim, true);
 						}
 						
-						if (FlxG.save.data.cpuStrums)
+						if (FlxG.save.data.distractions && FlxG.save.data.cpuStrums)
 						{
 							cpuStrums.forEach(function(spr:FlxSprite)
 							{
@@ -1793,7 +1793,7 @@ class PlayState extends MusicBeatState
 				});
 			}
 
-		if (FlxG.save.data.cpuStrums)
+		if (FlxG.save.data.distractions && FlxG.save.data.cpuStrums)
 		{
 			cpuStrums.forEach(function(spr:FlxSprite)
 			{
@@ -1900,17 +1900,6 @@ class PlayState extends MusicBeatState
 
 					trace('LOADING NEXT SONG');
 					trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
-
-					if (SONG.song.toLowerCase() == 'eggnog')
-					{
-						var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
-							-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-						blackShit.scrollFactor.set();
-						add(blackShit);
-						camHUD.visible = false;
-
-						FlxG.sound.play(Paths.sound('Lights_Shut_off'));
-					}
 
 					FlxTransitionableState.skipNextTransIn = true;
 					FlxTransitionableState.skipNextTransOut = true;
@@ -2682,88 +2671,93 @@ class PlayState extends MusicBeatState
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 		wiggleShit.update(Conductor.crochet);
 
-		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+		if (FlxG.save.data.distractions && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
 		}
 
-		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+		if (FlxG.save.data.distractions)
+		{
+			iconP1.setGraphicSize(Std.int(iconP1.width + 30));
+			iconP2.setGraphicSize(Std.int(iconP2.width + 30));
 
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+			iconP1.updateHitbox();
+			iconP2.updateHitbox();
+		}
 
 		if (curBeat % gfSpeed == 0)
-		{
 			gf.dance();
-		}
 
 		/* KAPI STAGE CODE STARTS */
 		
-		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
+		if (FlxG.save.data.distractions)
 		{
-			FlxG.camera.zoom += 0.015;
-			camHUD.zoom += 0.03;
-		}
-		if (SONG.song.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
-		{
-			FlxG.camera.zoom += 0.016;
-			camHUD.zoom += 0.015;
-		}
-		if (SONG.song.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
-		{
-			FlxG.camera.zoom += 0.014;
-			camHUD.zoom += 0.015;
-		}
-		if (SONG.song.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
-		{
-			FlxG.camera.zoom += 0.017;
-			camHUD.zoom += 0.02;
-		}
-
-		if (SONG.song.toLowerCase() == 'wocky' && curBeat % 2 == 0)
-		{
-			phillyCityLights.forEach(function(light:FlxSprite)
+			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
 			{
-				light.visible = false;
-			});
-
-			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
-
-			phillyCityLights.members[curLight].visible = true;
-		}
-		if ((SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball') && curBeat % 1 == 0)
-		{
-			phillyCityLights.forEach(function(light:FlxSprite)
+				FlxG.camera.zoom += 0.015;
+				camHUD.zoom += 0.03;
+			}
+			if (SONG.song.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
 			{
-				light.visible = false;
-			});
-
-			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
-
-			phillyCityLights.members[curLight].visible = true;
-		}
-		if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
-		{
-			phillyCityLights.forEach(function(light:FlxSprite)
+				FlxG.camera.zoom += 0.016;
+				camHUD.zoom += 0.015;
+			}
+			if (SONG.song.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
 			{
-				light.visible = false;
-			});
+				FlxG.camera.zoom += 0.014;
+				camHUD.zoom += 0.015;
+			}
+			if (SONG.song.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+			{
+				FlxG.camera.zoom += 0.017;
+				camHUD.zoom += 0.02;
+			}
 
-			curLight = FlxG.random.int(0, phillyCityLights.length - 1);
-			phillyCityLights.members[curLight].visible = true;
+			if (SONG.song.toLowerCase() == 'wocky' && curBeat % 2 == 0)
+			{
+				phillyCityLights.forEach(function(light:FlxSprite)
+				{
+					light.visible = false;
+				});
 
-			FlxG.camera.zoom += 0.02;
-			camHUD.zoom += 0.022;
+				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+				phillyCityLights.members[curLight].visible = true;
+			}
+			if ((SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball') && curBeat % 1 == 0)
+			{
+				phillyCityLights.forEach(function(light:FlxSprite)
+				{
+					light.visible = false;
+				});
+
+				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+				phillyCityLights.members[curLight].visible = true;
+			}
+			if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+			{
+				phillyCityLights.forEach(function(light:FlxSprite)
+				{
+					light.visible = false;
+				});
+
+				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+				phillyCityLights.members[curLight].visible = true;
+
+				FlxG.camera.zoom += 0.02;
+				camHUD.zoom += 0.022;
+			}
+
+			if (curBeat % 2 == 0 && (SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball'))
+				littleGuys.animation.play('bop', true);
+			if (curBeat % 2 == 1 && (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw'))
+				upperBoppers.animation.play('bop', true);
 		}
 
-		if (curBeat % 2 == 0 && SONG.song.toLowerCase() == 'nyaw')
-			bottomBoppers.animation.play('bop', true);
-		if (curBeat % 2 == 0 && (SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball'))
-			littleGuys.animation.play('bop', true);
-		if (curBeat % 2 == 1 && (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw'))
-			upperBoppers.animation.play('bop', true);
+			if (curBeat % 2 == 0 && SONG.song.toLowerCase() == 'nyaw')
+				bottomBoppers.animation.play('bop', true);
 
 		if (curStage == "arcade" && SONG.song.toLowerCase() == 'nyaw')
 		{
@@ -2772,9 +2766,12 @@ class PlayState extends MusicBeatState
 				case 31 | 135 | 203 | 363:
 					dad.playAnim('meow', true);
 				case 282:
-					FlxTween.tween(FlxG.camera, {zoom: 1}, .5, {
-						ease: FlxEase.quadInOut,
-					});
+					if (FlxG.save.data.distractions)
+					{
+						FlxTween.tween(FlxG.camera, {zoom: 1}, .5, {
+							ease: FlxEase.quadInOut,
+						});
+					}
 				case 283:
 					boyfriend.playAnim('meow', true);
 				case 434:
