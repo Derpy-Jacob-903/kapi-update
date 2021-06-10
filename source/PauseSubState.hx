@@ -29,6 +29,13 @@ class PauseSubState extends MusicBeatSubstate
 	
 	var offsetChanged:Bool = false;
 
+	#if siiva
+	// for displaying autoplay params
+	var showParam:Bool = false;
+	var textParam:FlxText;
+	var edit:Int = -1;
+	#end
+
 	public function new(x:Float, y:Float)
 	{
 		super();
@@ -85,6 +92,11 @@ class PauseSubState extends MusicBeatSubstate
 			songText.targetY = i;
 			grpMenuShit.add(songText);
 		}
+
+		#if siiva
+		textParam = new FlxText(500, 20, 700, "", 20);
+		add(textParam);
+		#end
 
 		changeSelection();
 
@@ -206,11 +218,120 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		}
 
-		if (FlxG.keys.justPressed.J)
+		#if siiva
+		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.J)
 		{
 			// for reference later!
 			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
+
+			// hi just gonna borrow this place
+			showParam = !showParam;
 		}
+
+		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.C)
+		{
+			PlayState.autoplay = !PlayState.autoplay;
+			trace("Autoplay " + (PlayState.autoplay ? "enabled" : "disabled"));
+		}
+
+		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.P)
+		{
+			PlayState.perfectAuto = !PlayState.perfectAuto;
+			trace("Perfect autoplay " + (PlayState.perfectAuto ? "enabled" : "disabled"));
+		}
+
+		if (FlxG.save.data.autoplay && showParam)
+		{
+			if (PlayState.autoplay)
+			{
+				var PARAM_NUM = 6;
+				if (edit == -1)
+					edit = 0;
+
+				if (PlayState.perfectAuto)
+					textParam.text = "PERFECT ENABLED\n";
+				else
+					textParam.text = "AUTO ENABLED\n";
+
+				// param modifier
+				if (FlxG.keys.justPressed.T)
+					edit = (edit + (PARAM_NUM - 1)) % PARAM_NUM; // -1 fails lol
+				if (FlxG.keys.justPressed.G)
+					edit = (edit + 1) % PARAM_NUM;
+
+				var left = FlxG.keys.justPressed.F;
+				var right = FlxG.keys.justPressed.H;
+				if (left || right)
+				{
+					switch (edit)
+					{
+						case 0:
+							if (left && Note.delayMin > 0)
+								Note.delayMin -= 1;
+							else if (right && Note.delayMin < Note.delayMax)
+								Note.delayMin += 1;
+						case 1:
+							if (left && Note.delayMax > Note.delayMin)
+								Note.delayMax -= 1;
+							else if (right)
+								Note.delayMax += 1;
+						case 2:
+							if (left && Note.delayStd > 1e-5) // float comparison epic
+								Note.delayStd -= 0.1;
+							else if (right)
+								Note.delayStd += 0.1;
+						case 3:
+							if (left && PlayState.antiInfiHoldThres > 1)
+								PlayState.antiInfiHoldThres -= 1;
+							else if (right)
+								PlayState.antiInfiHoldThres += 1;
+						case 4:
+							if (!PlayState.perfectAuto)
+							{
+								if (left && PlayState.holdDelayMin > 2)
+									PlayState.holdDelayMin -= 1;
+								else if (right)
+									PlayState.holdDelayMin += 1;
+							}
+							else
+							{
+								if (left && PlayState.holdPerfDelayMin > 2)
+									PlayState.holdPerfDelayMin -= 1;
+								else if (right)
+									PlayState.holdPerfDelayMin += 1;
+							}
+						case 5:
+							if (!PlayState.perfectAuto) {
+								if (left && PlayState.holdDelayMax > 2)
+									PlayState.holdDelayMax -= 1;
+								else if (right)
+									PlayState.holdDelayMax += 1;
+							}
+							else {
+								if (left && PlayState.holdPerfDelayMax > 2)
+									PlayState.holdPerfDelayMax -= 1;
+								else if (right)
+									PlayState.holdPerfDelayMax += 1;
+							}
+					}
+				}
+			}
+			else
+			{
+				edit = -1;
+				textParam.text = "AUTO DISABLED\n";
+			}
+
+			textParam.text += "Min delay: " + (edit == 0 ? "< " : "  ") + Note.delayMin + (edit == 0 ? " >" : "  ") + "\n";
+			textParam.text += "Max delay: " + (edit == 1 ? "< " : "  ") + Note.delayMax + (edit == 1 ? " >" : "  ") + "\n";
+			textParam.text += "Std delay: " + (edit == 2 ? "< " : "  ") + Note.delayStd + (edit == 2 ? " >" : "  ") + "\n";
+			textParam.text += "Inf thres: " + (edit == 3 ? "< " : "  ") + PlayState.antiInfiHoldThres + (edit == 3 ? " >" : "  ") + "\n";
+			textParam.text += "Hold min : " + (edit == 4 ? "< " : "  ") + (PlayState.perfectAuto ? PlayState.holdPerfDelayMin : PlayState.holdDelayMin) + (edit == 4 ? " >" : "  ") + "\n";
+			textParam.text += "Hold max : " + (edit == 5 ? "< " : "  ") + (PlayState.perfectAuto ? PlayState.holdPerfDelayMax : PlayState.holdDelayMax) + (edit == 5 ? " >" : "  ") + "\n";
+		}
+		else
+			textParam.text = "";
+		#end
 	}
 
 	override function destroy()

@@ -590,6 +590,7 @@ class OffsetMenu extends Option
 		return "Time your offset";
 	}
 }
+
 class BotPlay extends Option
 {
 	public function new(desc:String)
@@ -609,3 +610,25 @@ class BotPlay extends Option
 	private override function updateDisplay():String
 		return "BotPlay " + (FlxG.save.data.botplay ? "on" : "off");
 }
+
+#if siiva
+class AutoplayOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	
+	public override function press():Bool
+	{
+		FlxG.save.data.autoplay = !FlxG.save.data.autoplay;
+		trace('Autoplay : ' + FlxG.save.data.autoplay);
+		display = updateDisplay();
+		return true;
+	}
+	
+	private override function updateDisplay():String
+		return "Autoplay " + (FlxG.save.data.autoplay ? "on" : "off");
+}
+#end

@@ -80,6 +80,11 @@ class KadeEngineData
 		if (FlxG.save.data.botplay == null)
 			FlxG.save.data.botplay = false;
 
+		#if siiva
+		if (FlxG.save.data.autoplay == null)
+			FlxG.save.data.autoplay = false;
+		#end
+
 		if (FlxG.save.data.cpuStrums == null)
 			FlxG.save.data.cpuStrums = true;
 

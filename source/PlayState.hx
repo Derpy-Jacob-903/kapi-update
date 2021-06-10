@@ -37,6 +37,9 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+#if siiva
+import flixel.math.FlxRandom;
+#end
 import flixel.math.FlxRect;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
@@ -204,6 +207,23 @@ class PlayState extends MusicBeatState
 	
 	public function addObject(object:FlxBasic) { add(object); }
 	public function removeObject(object:FlxBasic) { remove(object); }
+
+	#if siiva
+	// autoplay thing
+	public static var autoplay:Bool = false;
+	public static var perfectAuto:Bool = false;
+	public static var antiInfiHoldThres:Int = 10;
+	public static var holdDelayMin:Int = 8;
+	public static var holdDelayMax:Int = 16;
+	public static var holdPerfDelayMin:Int = 3;
+	public static var holdPerfDelayMax:Int = 6;
+
+	private var hold:Array<Int> = [0, 0, 0, 0];
+	private var strumChecked:Array<Bool> = [false, false, false, false];
+	private var canRelease:Array<Bool> = [true, true, true, true];
+	private var strumHoldCounter:Array<Int> = [0, 0, 0, 0];
+	private var rand = new FlxRandom();
+	#end
 
 	override public function create()
 	{
@@ -971,6 +991,10 @@ class PlayState extends MusicBeatState
 				for (susNote in 0...Math.floor(susLength))
 				{
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
+					#if siiva
+					// for autoplay: the oldNote is a sustain note, set canRelease to false so dont release early
+					oldNote.canRelease = false;
+					#end
 
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
 					sustainNote.scrollFactor.set();
@@ -1360,6 +1384,20 @@ class PlayState extends MusicBeatState
 			}
 			#end
 		}
+
+		#if siiva
+		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.C)
+		{
+			autoplay = !autoplay;
+			trace("Autoplay " + (PlayState.autoplay ? "enabled" : "disabled"));
+		}
+
+		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.P)
+		{
+			perfectAuto = !perfectAuto;
+			trace("Perfect autoplay " + (PlayState.perfectAuto ? "enabled" : "disabled"));
+		}
+		#end
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
@@ -2223,6 +2261,132 @@ class PlayState extends MusicBeatState
 				if (controls.RIGHT_P){luaModchart.executeState('keyPressed',["right"]);};
 				};
 				#end
+
+			#if siiva
+			//=========== AUTOPLAY BELOW ============//
+			if (FlxG.save.data.autoplay && autoplay)
+			{
+				// yeet the player input
+				holdArray = [false, false, false, false];
+				pressArray = [false, false, false, false];
+				releaseArray = [false, false, false, false];
+
+				/**
+					Find notes that can be hit, and sort them by time
+					TODO: combine this with the one below so it doesnt do this twice?
+				**/
+				var possibleAutoNotes:Array<Note> = [];
+				notes.forEachAlive(function(note:Note)
+				{
+					if (note.canBeHit && note.mustPress && !note.tooLate && !note.wasGoodHit)
+					{
+						// there is a HP counter to randomize press time, init it first if it has not been initialized
+						if (!note.initHP)
+							note.initDelay(perfectAuto);
+						// subtract HP regardless of holding or not to ensure notes dont get ignored
+						if (note.autoHP > 0)
+							note.autoHP -= 1;
+						// add the note to possibleNotes
+						possibleAutoNotes.push(note);
+					}
+				});
+				possibleAutoNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+
+				/**
+					Update hold states for each arrow
+				**/
+				for (note in possibleAutoNotes)
+				{
+					strumHoldCounter[note.noteData] = 0;
+					// if note delay has passed
+					if (note.autoHP == 0)
+					{
+						// if this is the first note
+						if (!strumChecked[note.noteData])
+						{
+							// if currently holding
+							if (hold[note.noteData] > 1)
+							{
+								// if holding normal note or last sustain note (canRelease, which should be from the last frame)
+								// release in order to press next frame
+								if (canRelease[note.noteData] && !note.isSustainNote)
+									hold[note.noteData] = -1;
+								// else, holding sustain notes, keep holding
+							}
+							else if (hold[note.noteData] == 0)
+							{
+								// prevent a previous note in notes setting to -1
+								hold[note.noteData] = 1;
+							}
+							// update release state
+							canRelease[note.noteData] = note.canRelease;
+						}
+
+						strumChecked[note.noteData] = true;
+					}
+				}
+
+				/**
+					Update key press variables based on hold values
+				**/
+				for (idx in 0...4)
+				{
+					var DEBUG_ARROW_TEXT:Array<String> = ['left', 'down', 'up', 'right'];
+					var debug_arrow = DEBUG_ARROW_TEXT[idx];
+
+					// FlxG.watch.addQuick("hold " + debug_arrow, hold[idx]);
+					// FlxG.watch.addQuick("rel " + debug_arrow, canRelease[idx]);
+
+					// PRESS if hold is 1
+					if (hold[idx] == 1)
+					{
+						pressArray[idx] = true;
+						// FlxG.log.add('PRESS ' + debug_arrow);
+						hold[idx] = 2;
+					}
+
+					// HOLD if hold is > 1
+					if (hold[idx] > 1)
+					{
+						holdArray[idx] = true;
+						// FlxG.log.add('HOLD ' + debug_arrow + ' ' + hold[idx]);
+					}
+
+					// if holding, increment value until it reaches random threshold
+					if (hold[idx] > 1)
+					{
+						// if the arrow cannot be released yet (sustain note), ignore
+						// if holding for too long and there is no new note to reset HoldCounter, release
+						// hoping its the right balance between not holding too long and not releasing in the middle of long hold
+						if (canRelease[idx] || strumHoldCounter[idx] > antiInfiHoldThres)
+						{
+							hold[idx] += 1;
+							if (hold[idx] >= (perfectAuto ? 
+									rand.int(holdPerfDelayMin, holdPerfDelayMax) : 
+									rand.int(holdDelayMin, holdDelayMax)))
+								hold[idx] = -1;
+						}
+						else
+							hold[idx] = 2;
+						// increment anti infi-hold counter
+						++strumHoldCounter[idx];
+					}
+
+					// RELEASE if hold is -1
+					if (hold[idx] == -1)
+					{
+						releaseArray[idx] = true;
+						// FlxG.log.add('RELEASE ' + debug_arrow);
+						hold[idx] = 0;
+						strumHoldCounter[idx] = 0;
+					}
+
+					// reset for next frame
+					strumChecked[idx] = false;
+				}
+			}
+			//=========== AUTOPLAY ABOVE ============//
+			#end
 		 
 				// Prevent player input if botplay is on
 				if(FlxG.save.data.botplay)
