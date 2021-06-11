@@ -372,6 +372,9 @@ class PlayState extends MusicBeatState
 					bottomBoppers.scrollFactor.set(0.92, 0.92);
 					bottomBoppers.updateHitbox();
 					add(bottomBoppers);
+
+					if (!FlxG.save.data.distractions && !isStoryMode)
+						bottomBoppers.visible = false;
 				}
 
 				var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('platform', 'arcade'));
