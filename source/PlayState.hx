@@ -2865,30 +2865,33 @@ class PlayState extends MusicBeatState
 		
 		if (FlxG.save.data.camzoom)
 		{
-			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
+			if (FlxG.save.data.distractions)
 			{
-				FlxG.camera.zoom += 0.015;
-				camHUD.zoom += 0.03;
-			}
-			if (SONG.song.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
-			{
-				FlxG.camera.zoom += 0.016;
-				camHUD.zoom += 0.015;
-			}
-			if (SONG.song.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
-			{
-				FlxG.camera.zoom += 0.014;
-				camHUD.zoom += 0.015;
-			}
-			if (SONG.song.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
-			{
-				FlxG.camera.zoom += 0.017;
-				camHUD.zoom += 0.02;
-			}
-			if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
-			{
-				FlxG.camera.zoom += 0.02;
-				camHUD.zoom += 0.022;
+				if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
+				{
+					FlxG.camera.zoom += 0.015;
+					camHUD.zoom += 0.03;
+				}
+				if (SONG.song.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+				{
+					FlxG.camera.zoom += 0.016;
+					camHUD.zoom += 0.015;
+				}
+				if (SONG.song.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+				{
+					FlxG.camera.zoom += 0.014;
+					camHUD.zoom += 0.015;
+				}
+				if (SONG.song.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+				{
+					FlxG.camera.zoom += 0.017;
+					camHUD.zoom += 0.02;
+				}
+				if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+				{
+					FlxG.camera.zoom += 0.02;
+					camHUD.zoom += 0.022;
+				}
 			}
 		}
 
