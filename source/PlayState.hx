@@ -227,6 +227,11 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
+		#if siiva
+		// enable from save file
+		autoplay = FlxG.save.data.autoplay;
+		#end
+
 		instance = this;
 		
 		if (FlxG.save.data.fpsCap > 290)
@@ -1386,13 +1391,13 @@ class PlayState extends MusicBeatState
 		}
 
 		#if siiva
-		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.C)
+		if (FlxG.keys.justPressed.C)
 		{
 			autoplay = !autoplay;
 			trace("Autoplay " + (PlayState.autoplay ? "enabled" : "disabled"));
 		}
 
-		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.P)
+		if (FlxG.keys.justPressed.P)
 		{
 			perfectAuto = !perfectAuto;
 			trace("Perfect autoplay " + (PlayState.perfectAuto ? "enabled" : "disabled"));
@@ -2264,7 +2269,7 @@ class PlayState extends MusicBeatState
 
 			#if siiva
 			//=========== AUTOPLAY BELOW ============//
-			if (FlxG.save.data.autoplay && autoplay)
+			if (autoplay)
 			{
 				// yeet the player input
 				holdArray = [false, false, false, false];

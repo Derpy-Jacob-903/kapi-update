@@ -629,6 +629,6 @@ class AutoplayOption extends Option
 	}
 	
 	private override function updateDisplay():String
-		return "Autoplay " + (FlxG.save.data.autoplay ? "on" : "off");
+		return "Autoplay " + (FlxG.save.data.autoplay ? "on" : "off") + " by default";
 }
 #end

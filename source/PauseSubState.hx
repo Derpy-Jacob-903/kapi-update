@@ -219,7 +219,7 @@ class PauseSubState extends MusicBeatSubstate
 		}
 
 		#if siiva
-		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.J)
+		if (FlxG.keys.justPressed.J)
 		{
 			// for reference later!
 			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
@@ -228,19 +228,19 @@ class PauseSubState extends MusicBeatSubstate
 			showParam = !showParam;
 		}
 
-		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.C)
+		if (FlxG.keys.justPressed.C)
 		{
 			PlayState.autoplay = !PlayState.autoplay;
 			trace("Autoplay " + (PlayState.autoplay ? "enabled" : "disabled"));
 		}
 
-		if (FlxG.save.data.autoplay && FlxG.keys.justPressed.P)
+		if (FlxG.keys.justPressed.P)
 		{
 			PlayState.perfectAuto = !PlayState.perfectAuto;
 			trace("Perfect autoplay " + (PlayState.perfectAuto ? "enabled" : "disabled"));
 		}
 
-		if (FlxG.save.data.autoplay && showParam)
+		if (showParam)
 		{
 			if (PlayState.autoplay)
 			{
