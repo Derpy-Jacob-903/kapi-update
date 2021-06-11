@@ -199,7 +199,7 @@ class SongPositionOption extends Option
 	}
 }
 
-class DistractionsAndEffectsOption extends Option
+class DistractionsOption extends Option
 {
 	public function new(desc:String)
 	{
@@ -216,6 +216,26 @@ class DistractionsAndEffectsOption extends Option
 	private override function updateDisplay():String
 	{
 		return "Distractions " + (!FlxG.save.data.distractions ? "off" : "on");
+	}
+}
+
+class CamZoomOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	public override function press():Bool
+	{
+		FlxG.save.data.camzoom = !FlxG.save.data.camzoom;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Camera Zoom " + (!FlxG.save.data.camzoom ? "off" : "on");
 	}
 }
 

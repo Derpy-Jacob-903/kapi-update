@@ -71,6 +71,9 @@ class KadeEngineData
 		if (FlxG.save.data.distractions == null)
 			FlxG.save.data.distractions = true;
 
+		if (FlxG.save.data.camzoom == null)
+			FlxG.save.data.camzoom = true;
+
 		if (FlxG.save.data.flashing == null)
 			FlxG.save.data.flashing = true;
 

@@ -39,7 +39,8 @@ class OptionsMenu extends MusicBeatState
 			new CustomizeGameplay("Drag'n'Drop Gameplay Modules around to your preference")
 		]),
 		new OptionCategory("Appearance", [
-			new DistractionsAndEffectsOption("Toggles distractions that can hinder your gameplay."),
+			new DistractionsOption("Toggles distractions that can hinder your gameplay."),
+			new CamZoomOption("Toggles the camera zooming on beat."),
 			new RainbowFPSOption("Make the FPS Counter Rainbow"),
 			new AccuracyOption("Display accuracy information."),
 			new NPSDisplayOption("Shows your current Notes Per Second."),

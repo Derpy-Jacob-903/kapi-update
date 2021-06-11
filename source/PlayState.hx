@@ -2627,11 +2627,11 @@ class PlayState extends MusicBeatState
 		}
 	*/
 	function updateAccuracy() 
-		{
-			totalPlayed += 1;
-			accuracy = Math.max(0,totalNotesHit / totalPlayed * 100);
-			accuracyDefault = Math.max(0, totalNotesHitDefault / totalPlayed * 100);
-		}
+	{
+		totalPlayed += 1;
+		accuracy = Math.max(0,totalNotesHit / totalPlayed * 100);
+		accuracyDefault = Math.max(0, totalNotesHitDefault / totalPlayed * 100);
+	}
 
 
 	function getKeyPresses(note:Note):Int
@@ -2840,13 +2840,13 @@ class PlayState extends MusicBeatState
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 		wiggleShit.update(Conductor.crochet);
 
-		if (FlxG.save.data.distractions && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+		if (FlxG.save.data.camzoom && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
 		}
 
-		if (FlxG.save.data.distractions)
+		if (FlxG.save.data.camzoom)
 		{
 			iconP1.setGraphicSize(Std.int(iconP1.width + 30));
 			iconP2.setGraphicSize(Std.int(iconP2.width + 30));
@@ -2860,7 +2860,7 @@ class PlayState extends MusicBeatState
 
 		/* KAPI STAGE CODE STARTS */
 		
-		if (FlxG.save.data.distractions)
+		if (FlxG.save.data.camzoom)
 		{
 			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
 			{
@@ -2882,7 +2882,15 @@ class PlayState extends MusicBeatState
 				FlxG.camera.zoom += 0.017;
 				camHUD.zoom += 0.02;
 			}
+			if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+			{
+				FlxG.camera.zoom += 0.02;
+				camHUD.zoom += 0.022;
+			}
+		}
 
+		if (FlxG.save.data.distractions)
+		{
 			if (SONG.song.toLowerCase() == 'wocky' && curBeat % 2 == 0)
 			{
 				phillyCityLights.forEach(function(light:FlxSprite)
@@ -2914,9 +2922,6 @@ class PlayState extends MusicBeatState
 
 				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
 				phillyCityLights.members[curLight].visible = true;
-
-				FlxG.camera.zoom += 0.02;
-				camHUD.zoom += 0.022;
 			}
 
 			if (curBeat % 2 == 0 && (SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball'))
@@ -2935,7 +2940,7 @@ class PlayState extends MusicBeatState
 				case 31 | 135 | 203 | 363:
 					dad.playAnim('meow', true);
 				case 282:
-					if (FlxG.save.data.distractions)
+					if (FlxG.save.data.camzoom)
 					{
 						FlxTween.tween(FlxG.camera, {zoom: 1}, .5, {
 							ease: FlxEase.quadInOut,
