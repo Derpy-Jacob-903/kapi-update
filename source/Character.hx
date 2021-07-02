@@ -30,6 +30,60 @@ class Character extends FlxSprite
 
 		switch (curCharacter)
 		{
+			case 'kapi':
+				tex = Paths.getSparrowAtlas('characters/KAPI');
+				frames = tex;
+				animation.addByIndices('idle', 'Dad idle dance', [2, 4, 6, 8, 10, 0], "", 12, false);
+				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24, false);
+				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24, false);
+				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24, false);
+				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24, false);
+				animation.addByPrefix('meow', 'Dad meow', 24, false);
+				animation.addByPrefix('stare', 'Dad stare', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", -6, 50);
+				addOffset("singRIGHT", 0, 27);
+				addOffset("singLEFT", -10, 10);
+				addOffset("singDOWN", 0, -30);
+				addOffset('meow');
+				addOffset('stare');
+
+				playAnim('idle');
+			case 'kapi-mad':
+				tex = Paths.getSparrowAtlas('characters/KAPI_ANGRY');
+				frames = tex;
+				animation.addByIndices('idle', 'Dad idle dance', [2, 4, 6, 8, 10, 0], "", 12, false);
+				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24, false);
+				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24, false);
+				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24, false);
+				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24, false);
+				animation.addByPrefix('stomp', 'Dad meow', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", -6, 50);
+				addOffset("singRIGHT", 0, 27);
+				addOffset("singLEFT", -10, 10);
+				addOffset("singDOWN", 0, -30);
+				addOffset('stomp');
+
+				playAnim('idle');
+			case 'game-and-watch':
+				tex = Paths.getSparrowAtlas('characters/game_and_watch');
+				frames = tex;
+				animation.addByIndices('idle', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
+				animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
+				animation.addByPrefix('singDOWN', 'spooky DOWN note', 24, false);
+				animation.addByPrefix('singLEFT', 'note sing left', 24, false);
+				animation.addByPrefix('singRIGHT', 'spooky sing right', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP");
+				addOffset("singRIGHT");
+				addOffset("singLEFT");
+				addOffset("singDOWN");
+
+				playAnim('idle');
 			case 'gf':
 				// GIRLFRIEND CODE
 				tex = Paths.getSparrowAtlas('characters/GF_assets');
