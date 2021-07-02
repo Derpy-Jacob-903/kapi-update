@@ -808,13 +808,13 @@ class PlayState extends MusicBeatState
 					tweenCamIn();
 				}
 
-			case "spooky":
+			case "spooky" | "game-and-watch":
 				dad.y += 200;
 			case "monster":
 				dad.y += 100;
 			case 'monster-christmas':
 				dad.y += 130;
-			case 'dad':
+			case 'dad' | "kapi" | "kapi-mad":
 				camPos.x += 400;
 			case 'pico':
 				camPos.x += 600;
