@@ -6,3 +6,7 @@ mall
 mallEvil
 school
 schoolEvil
+arcade
+arcade-sunset
+arcade-closed
+flatzone

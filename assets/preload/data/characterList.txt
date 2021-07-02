@@ -15,3 +15,6 @@ bf-pixel
 senpai
 senpai-angry
 spirit
+kapi
+kapi-mad
+game-and-watch
