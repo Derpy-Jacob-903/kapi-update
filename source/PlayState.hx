@@ -184,6 +184,8 @@ class PlayState extends MusicBeatState
 	var bottomBoppers:FlxSprite;
 	var santa:FlxSprite;
 
+	var littleGuys:FlxSprite;
+
 	var fc:Bool = true;
 
 	var bgGirls:BackgroundGirls;
@@ -365,6 +367,14 @@ class PlayState extends MusicBeatState
 				dialogue = CoolUtil.coolTextFile(Paths.txt('roses/rosesDialogue'));
 			case 'thorns':
 				dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
+			case 'wocky':
+				dialogue = CoolUtil.coolTextFile(Paths.txt('wocky/dialogue'));
+			case 'beathoven':
+				dialogue = CoolUtil.coolTextFile(Paths.txt('beathoven/dialogue'));
+			case 'hairball':
+				dialogue = CoolUtil.coolTextFile(Paths.txt('hairball/dialogue'));
+			case 'nyaw':
+				dialogue = CoolUtil.coolTextFile(Paths.txt('nyaw/dialogue'));
 		}
 
 		//defaults if no stage was found in chart
@@ -387,6 +397,93 @@ class PlayState extends MusicBeatState
 
 		switch(stageCheck)
 		{
+			case 'arcade' | 'arcade-sunset' | 'arcade-closed':
+				defaultCamZoom = 0.9;
+				curStage = 'arcade';
+
+				var bg:FlxSprite;
+				switch (SONG.stage)
+				{
+					default:
+						bg = new FlxSprite(-600, -200).loadGraphic(Paths.image('arcade', 'arcade'));
+					case 'arcade-sunset':
+						bg = new FlxSprite(-600, -200).loadGraphic(Paths.image('sunset', 'arcade'));
+					case 'arcade-closed':
+						bg = new FlxSprite(-600, -200).loadGraphic(Paths.image('closed', 'arcade'));
+				}
+				bg.antialiasing = true;
+				bg.scrollFactor.set(0.9, 0.9);
+				bg.active = false;
+				add(bg);
+
+				phillyCityLights = new FlxTypedGroup<FlxSprite>();
+				for (i in 0...5)
+				{
+					var light:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('light' + i, 'arcade'));
+					light.scrollFactor.set(0.9, 0.9);
+					light.visible = false;
+					light.updateHitbox();
+					light.antialiasing = true;
+					phillyCityLights.add(light);
+				}
+				if (FlxG.save.data.distractions)
+					add(phillyCityLights);
+
+				if (FlxG.save.data.distractions && (SONG.song.toLowerCase() == "beathoven" || SONG.song.toLowerCase() == "hairball"))
+				{
+					littleGuys = new FlxSprite(25, 200);
+					littleGuys.frames = Paths.getSparrowAtlas('littleguys', 'arcade');
+					littleGuys.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
+					littleGuys.antialiasing = true;
+					littleGuys.scrollFactor.set(0.9, 0.9);
+					littleGuys.updateHitbox();
+					add(littleGuys);
+				}
+
+				if (SONG.song.toLowerCase() == "nyaw")
+				{
+					bottomBoppers = new FlxSprite(-600, -200);
+					bottomBoppers.frames = Paths.getSparrowAtlas('bgFreaks', 'arcade');
+					bottomBoppers.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
+					bottomBoppers.antialiasing = true;
+					bottomBoppers.scrollFactor.set(0.92, 0.92);
+					bottomBoppers.updateHitbox();
+					add(bottomBoppers);
+
+					if (!FlxG.save.data.distractions && !isStoryMode)
+						bottomBoppers.visible = false;
+				}
+
+				var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('platform', 'arcade'));
+				stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
+				stageFront.updateHitbox();
+				stageFront.antialiasing = true;
+				stageFront.scrollFactor.set(0.9, 0.9);
+				stageFront.active = false;
+				add(stageFront);
+
+				if (FlxG.save.data.distractions && (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw'))
+				{
+					upperBoppers = new FlxSprite(-600, -200);
+					upperBoppers.frames = Paths.getSparrowAtlas('upperBop', 'arcade');
+					upperBoppers.animation.addByPrefix('bop', "Upper Crowd Bob", 24, false);
+					upperBoppers.antialiasing = true;
+					upperBoppers.scrollFactor.set(1.05, 1.05);
+					upperBoppers.updateHitbox();
+					add(upperBoppers);
+				}
+
+			case 'flatzone': 
+				curStage = 'flatzone';
+
+				var hallowTex = Paths.getSparrowAtlas('halloween_bg', 'flatzone');
+				halloweenBG = new FlxSprite(-200, -100);
+				halloweenBG.frames = hallowTex;
+				halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
+				halloweenBG.animation.play('idle');
+				halloweenBG.antialiasing = true;
+				add(halloweenBG);
+
 			case 'halloween': 
 			{
 				curStage = 'spooky';
@@ -1075,6 +1172,39 @@ class PlayState extends MusicBeatState
 		{
 			switch (StringTools.replace(curSong," ", "-").toLowerCase())
 			{
+				case 'wocky' | 'beathoven' | 'nyaw':
+					kapiIntro(doof);
+				case "hairball":
+					var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
+					add(blackScreen);
+					blackScreen.scrollFactor.set();
+					camHUD.visible = false;
+
+					new FlxTimer().start(0.1, function(tmr:FlxTimer)
+					{
+						remove(blackScreen);
+						FlxG.sound.play(Paths.sound('brokenpad', 'arcade'));
+						camFollow.y = 590;
+						camFollow.x -= 200;
+						FlxG.camera.focusOn(camFollow.getPosition());
+						FlxG.camera.zoom = 1.1;
+						new FlxTimer().start(0.2, function(tmr:FlxTimer)
+						{
+							dad.playAnim('stomp', true);
+						});
+						new FlxTimer().start(0.6, function(tmr:FlxTimer)
+						{
+							camHUD.visible = true;
+							remove(blackScreen);
+							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
+								ease: FlxEase.quadInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									kapiIntro(doof);
+								}
+							});
+						});
+					});
 				case "winter-horrorland":
 					var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
 					add(blackScreen);
@@ -1129,6 +1259,44 @@ class PlayState extends MusicBeatState
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 
 		super.create();
+	}
+
+	function kapiIntro(?dialogueBox:DialogueBox):Void
+	{
+		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+		black.scrollFactor.set();
+		add(black);
+
+		var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31);
+		red.scrollFactor.set();
+
+		if (SONG.song.toLowerCase() == 'hairball')
+		{
+			remove(black);
+			add(dialogueBox);
+		}
+
+		new FlxTimer().start(0.2, function(tmr:FlxTimer)
+		{	
+			black.alpha -= 0.1;
+
+			if (black.alpha > 0)
+			{
+				tmr.reset(0.3);
+			}
+			else
+			{
+				if (dialogueBox != null)
+				{
+					inCutscene = true;
+					add(dialogueBox);
+				}
+				else
+					startCountdown();
+
+				remove(black);
+			}
+		});
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBox):Void
@@ -2735,7 +2903,10 @@ class PlayState extends MusicBeatState
 					FlxG.sound.music.stop();
 					vocals.stop();
 					if (FlxG.save.data.scoreScreen)
+					{
+						camHUD.visible = true;
 						openSubState(new ResultsScreen());
+					}
 					else
 					{
 						FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -2810,7 +2981,10 @@ class PlayState extends MusicBeatState
 				vocals.stop();
 
 				if (FlxG.save.data.scoreScreen)
+				{
+					camHUD.visible = true;
 					openSubState(new ResultsScreen());
+				}
 				else
 					FlxG.switchState(new FreeplayState());
 			}
@@ -3875,7 +4049,114 @@ class PlayState extends MusicBeatState
 		{
 			boyfriend.playAnim('idle');
 		}
-		
+
+		/* KAPI STAGE CODE STARTS */
+
+		if (FlxG.save.data.camzoom)
+		{
+			if (FlxG.save.data.distractions)
+			{
+				if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && SONG.song.toLowerCase() != 'nyaw')
+				{
+					FlxG.camera.zoom += 0.015;
+					camHUD.zoom += 0.03;
+				}
+				if (SONG.song.toLowerCase() == 'wocky' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+				{
+					FlxG.camera.zoom += 0.016;
+					camHUD.zoom += 0.015;
+				}
+				if (SONG.song.toLowerCase() == 'beathoven' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+				{
+					FlxG.camera.zoom += 0.014;
+					camHUD.zoom += 0.015;
+				}
+				if (SONG.song.toLowerCase() == 'hairball' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+				{
+					FlxG.camera.zoom += 0.017;
+					camHUD.zoom += 0.02;
+				}
+				if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+				{
+					FlxG.camera.zoom += 0.02;
+					camHUD.zoom += 0.022;
+				}
+			}
+		}
+
+		if (FlxG.save.data.distractions)
+		{
+			if (SONG.song.toLowerCase() == 'wocky' && curBeat % 2 == 0)
+			{
+				phillyCityLights.forEach(function(light:FlxSprite)
+				{
+					light.visible = false;
+				});
+
+				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+				phillyCityLights.members[curLight].visible = true;
+			}
+			if ((SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball') && curBeat % 1 == 0)
+			{
+				phillyCityLights.forEach(function(light:FlxSprite)
+				{
+					light.visible = false;
+				});
+
+				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+
+				phillyCityLights.members[curLight].visible = true;
+			}
+			if (SONG.song.toLowerCase() == 'nyaw' && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0 && curBeat != 283 && curBeat != 282)
+			{
+				phillyCityLights.forEach(function(light:FlxSprite)
+				{
+					light.visible = false;
+				});
+
+				curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+				phillyCityLights.members[curLight].visible = true;
+			}
+
+			if (curBeat % 2 == 0 && (SONG.song.toLowerCase() == 'beathoven' || SONG.song.toLowerCase() == 'hairball'))
+				littleGuys.animation.play('bop', true);
+			if (curBeat % 2 == 1 && (SONG.song.toLowerCase() == 'hairball' || SONG.song.toLowerCase() == 'nyaw'))
+				upperBoppers.animation.play('bop', true);
+		}
+
+			if (curBeat % 2 == 0 && SONG.song.toLowerCase() == 'nyaw')
+				bottomBoppers.animation.play('bop', true);
+
+		if (curStage == "arcade" && SONG.song.toLowerCase() == 'nyaw')
+		{
+			switch (curBeat)
+			{
+				case 31 | 135 | 203 | 363:
+					dad.playAnim('meow', true);
+				case 282:
+					if (FlxG.save.data.camzoom)
+					{
+						FlxTween.tween(FlxG.camera, {zoom: 1}, .5, {
+							ease: FlxEase.quadInOut,
+						});
+					}
+				case 283:
+					boyfriend.playAnim('hey', true);
+				case 434:
+					dad.playAnim('stare', true);
+
+					new FlxTimer().start(1.1, function(tmr:FlxTimer)
+					{
+						var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+						black.scrollFactor.set();
+						add(black);
+						camHUD.visible = false;
+					});
+			}
+		}
+
+		/* KAPI STAGE CODE ENDS */
 
 		if (curBeat % 8 == 7 && curSong == 'Bopeebo')
 		{
