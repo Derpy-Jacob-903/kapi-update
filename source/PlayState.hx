@@ -474,6 +474,7 @@ class PlayState extends MusicBeatState
 				}
 
 			case 'flatzone': 
+				defaultCamZoom = 0.9;
 				curStage = 'flatzone';
 
 				var hallowTex = Paths.getSparrowAtlas('halloween_bg', 'flatzone');
