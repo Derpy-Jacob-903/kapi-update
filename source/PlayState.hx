@@ -4050,6 +4050,8 @@ class PlayState extends MusicBeatState
 			boyfriend.playAnim('idle');
 		}
 
+		if (!PlayStateChangeables.Optimize)
+		{
 		/* KAPI STAGE CODE STARTS */
 
 		if (FlxG.save.data.camzoom)
@@ -4157,6 +4159,7 @@ class PlayState extends MusicBeatState
 		}
 
 		/* KAPI STAGE CODE ENDS */
+		}
 
 		if (curBeat % 8 == 7 && curSong == 'Bopeebo')
 		{
