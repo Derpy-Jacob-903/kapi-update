@@ -24,10 +24,14 @@ class StoryMenuState extends MusicBeatState
 {
 	var scoreText:FlxText;
 
-	var weekData:Array<Dynamic> = [
-		['Wocky', 'Beathoven', 'Hairball', 'Nyaw'],
-		['Flatzone']
-	];
+	static function weekData():Array<Dynamic>
+	{
+		return [
+			['Wocky', 'Beathoven', 'Hairball', 'Nyaw'],
+			['Flatzone']
+		];
+	}
+
 	var curDifficulty:Int = 1;
 
 	public static var weekUnlocked:Array<Bool> = [];
