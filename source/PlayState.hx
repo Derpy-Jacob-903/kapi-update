@@ -370,13 +370,13 @@ class PlayState extends MusicBeatState
 			case 'thorns':
 				dialogue = CoolUtil.coolTextFile(Paths.txt('data/thorns/thornsDialogue'));
 			case 'wocky':
-				dialogue = CoolUtil.coolTextFile(Paths.txt('wocky/dialogue'));
+				dialogue = CoolUtil.coolTextFile(Paths.txt('data/wocky/dialogue'));
 			case 'beathoven':
-				dialogue = CoolUtil.coolTextFile(Paths.txt('beathoven/dialogue'));
+				dialogue = CoolUtil.coolTextFile(Paths.txt('data/beathoven/dialogue'));
 			case 'hairball':
-				dialogue = CoolUtil.coolTextFile(Paths.txt('hairball/dialogue'));
+				dialogue = CoolUtil.coolTextFile(Paths.txt('data/hairball/dialogue'));
 			case 'nyaw':
-				dialogue = CoolUtil.coolTextFile(Paths.txt('nyaw/dialogue'));
+				dialogue = CoolUtil.coolTextFile(Paths.txt('data/nyaw/dialogue'));
 		}
 
 		//defaults if no stage was found in chart
