@@ -41,13 +41,7 @@ class Character extends FlxSprite
 				animation.addByPrefix('meow', 'Dad meow', 24, false);
 				animation.addByPrefix('stare', 'Dad stare', 24, false);
 
-				addOffset('idle');
-				addOffset("singUP", -6, 50);
-				addOffset("singRIGHT", 0, 27);
-				addOffset("singLEFT", -10, 10);
-				addOffset("singDOWN", 0, -30);
-				addOffset('meow');
-				addOffset('stare');
+				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
 			case 'kapi-mad':
@@ -60,12 +54,7 @@ class Character extends FlxSprite
 				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24, false);
 				animation.addByPrefix('stomp', 'Dad meow', 24, false);
 
-				addOffset('idle');
-				addOffset("singUP", -6, 50);
-				addOffset("singRIGHT", 0, 27);
-				addOffset("singLEFT", -10, 10);
-				addOffset("singDOWN", 0, -30);
-				addOffset('stomp');
+				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
 			case 'game-and-watch':
@@ -77,11 +66,7 @@ class Character extends FlxSprite
 				animation.addByPrefix('singLEFT', 'note sing left', 24, false);
 				animation.addByPrefix('singRIGHT', 'spooky sing right', 24, false);
 
-				addOffset('idle');
-				addOffset("singUP");
-				addOffset("singRIGHT");
-				addOffset("singLEFT");
-				addOffset("singDOWN");
+				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
 			case 'gf':
