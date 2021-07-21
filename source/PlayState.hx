@@ -3236,6 +3236,8 @@ class PlayState extends MusicBeatState
 			case 'bad':
 				daRating = 'bad';
 				score = 0;
+				combo = 0;
+				misses++;
 				health -= 0.03;
 				ss = false;
 				bads++;
