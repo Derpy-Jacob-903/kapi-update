@@ -95,6 +95,7 @@ class FreeplayState extends MusicBeatState
 
 		trace("tryin to load sm files");
 
+		/*
 		#if sys
 		for(i in FileSystem.readDirectory("assets/sm/"))
 		{
@@ -121,6 +122,7 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 		#end
+		*/
 
 		//trace("\n" + diffList);
 
