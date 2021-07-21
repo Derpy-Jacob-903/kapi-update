@@ -15,6 +15,12 @@ class KadeEngineData
 		if (FlxG.save.data.downscroll == null)
 			FlxG.save.data.downscroll = false;
 
+		if (FlxG.save.data.antialiasing == null)
+			FlxG.save.data.antialiasing = true;
+
+		if (FlxG.save.data.missSounds == null)
+			FlxG.save.data.missSounds = true;
+
 		if (FlxG.save.data.dfjk == null)
 			FlxG.save.data.dfjk = false;
 			
@@ -66,6 +72,9 @@ class KadeEngineData
 
 		if (FlxG.save.data.distractions == null)
 			FlxG.save.data.distractions = true;
+		
+		if (FlxG.save.data.stepMania == null)
+			FlxG.save.data.stepMania = false;
 
 		if (FlxG.save.data.flashing == null)
 			FlxG.save.data.flashing = true;
@@ -97,6 +106,9 @@ class KadeEngineData
 		if (FlxG.save.data.optimize == null)
 			FlxG.save.data.optimize = false;
 		
+		if (FlxG.save.data.cacheImages == null)
+			FlxG.save.data.cacheImages = false;
+
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		
 		KeyBinds.gamepad = gamepad != null;
